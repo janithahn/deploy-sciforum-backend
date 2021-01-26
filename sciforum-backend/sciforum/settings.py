@@ -252,6 +252,9 @@ DATABASES = {
     'crawler': {
         'ENGINE': 'djongo',
         'NAME': 'sciEventsCrawler',
+        'CLIENT': {
+            'host': 'mongodb'
+        }
     },
 }
 
