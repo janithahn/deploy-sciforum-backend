@@ -35,9 +35,9 @@ DEBUG = config('DEBUG', cast=bool)
 ALLOWED_HOSTS = ['ec2-3-234-199-185.compute-1.amazonaws.com', 'api.sciforum.tech']
 
 SECURE_PROXY_SSL_HEADER = ("HTTP_X_FORWARDED_PROTO", "https")
-os.environ['HTTPS'] = "on"
-SESSION_COOKIE_SECURE = True
-CSRF_COOKIE_SECURE = True
+# os.environ['HTTPS'] = "on"
+# SESSION_COOKIE_SECURE = True
+# CSRF_COOKIE_SECURE = True
 
 # Password reset email
 # EMAIL_BACKEND = 'django.core.mail.backends.console.EmailBackend'  # this gives the email in the console
