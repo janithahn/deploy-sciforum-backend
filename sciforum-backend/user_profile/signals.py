@@ -26,14 +26,14 @@ def password_reset_token_created(sender, instance, reset_password_token, *args, 
     :param kwargs:
     :return:
     """
-    font_end_url = 'http://localhost:3000/users/profile/password_reset/confirm/'
+    front_end_url = 'https://main.d12r26948cu3h1.amplifyapp.com/users/profile/password_reset/confirm/'
 
     # send an e-mail to the user
     context = {
         'current_user': reset_password_token.user,
         'username': reset_password_token.user.username,
         'email': reset_password_token.user.email,
-        'reset_password_url': font_end_url + "{}".format(
+        'reset_password_url': front_end_url + "{}".format(
             reset_password_token.key)
     }
 
@@ -71,7 +71,7 @@ def log_user_logged_in_success(sender, user, request, **kwargs):
     try:
         user_agent_info = request.META.get('HTTP_USER_AGENT', '<unknown>')[:255],
 
-        #user_login_activity_log = Profile(login_ip=get_client_ip(request), user=user, user_agent_info=user_agent_info)
+        # user_login_activity_log = Profile(login_ip=get_client_ip(request), user=user, user_agent_info=user_agent_info)
         # user_login_activity_log.save()
         Profile.objects.select_related().filter(user=user).update(login_ip=get_client_ip(request), user_agent_info=user_agent_info)
 
