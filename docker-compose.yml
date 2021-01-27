@@ -53,8 +53,8 @@ services:
     build:
       context: ./sciforum-backend/
       dockerfile: Dockerfile
-    # ports:
-    #   - "8000:80"
+    ports:
+       - "8000:443"
     depends_on:
       - mysqldb
       - mongodb
