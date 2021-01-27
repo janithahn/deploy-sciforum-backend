@@ -38,6 +38,9 @@ SECURE_PROXY_SSL_HEADER = ("HTTP_X_FORWARDED_PROTO", "https")
 os.environ['HTTPS'] = "on"
 SESSION_COOKIE_SECURE = True
 CSRF_COOKIE_SECURE = True
+SERVER_TYPE = "DEV"
+SESSION_COOKIE_HTTPONLY = True
+SESSION_EXPIRE_AT_BROWSER_CLOSE = True
 
 # Password reset email
 # EMAIL_BACKEND = 'django.core.mail.backends.console.EmailBackend'  # this gives the email in the console
