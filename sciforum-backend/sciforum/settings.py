@@ -32,7 +32,7 @@ SECRET_KEY = config('SECRET_KEY')
 # SECURITY WARNING: don't run with debug turned on in production!
 DEBUG = config('DEBUG', cast=bool)
 
-ALLOWED_HOSTS = ['localhost', '127.0.0.1', '0.0.0.0', 'ec2-3-234-199-185.compute-1.amazonaws.com', '3.234.199.185', 'api.sciforum.tech', '172.31.19.35']
+ALLOWED_HOSTS = ['ec2-3-234-199-185.compute-1.amazonaws.com', 'api.sciforum.tech']
 
 SECURE_PROXY_SSL_HEADER = ("HTTP_X_FORWARDED_PROTO", "https")
 
