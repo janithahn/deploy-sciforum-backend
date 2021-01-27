@@ -4,4 +4,4 @@ WORKDIR /app/api
 COPY requirements.txt ./
 RUN pip install -r requirements.txt
 COPY . ./
-EXPOSE 443
+EXPOSE 8000
