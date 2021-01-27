@@ -2,20 +2,19 @@ version: "3.2"
 
 services:
 
-  nginx:
-    image: nginx:1.15-alpine
+  nginx-certbot:
+    restart: unless-stopped
+    image: staticfloat/nginx-certbot
     ports:
-      - "80:80"
-      - "443:443"
+        - 80:80/tcp
+        - 443:443/tcp
+    environment:
+        CERTBOT_EMAIL: admin@sciforum.tech
+        ENVSUBST_VARS: FQDN
+        FQDN: api.sciforum.tech
     volumes:
-      - ./data/nginx:/etc/nginx/conf.d
-      - ./data/certbot/conf:/etc/letsencrypt
-      - ./data/certbot/www:/var/www/certbot
-  certbot:
-    image: certbot/certbot
-    volumes:
-      - ./data/certbot/conf:/etc/letsencrypt
-      - ./data/certbot/www:/var/www/certbot
+      - ./conf.d:/etc/nginx/user.conf.d:ro
+      - letsencrypt:/etc/letsencrypt
 
   mongodb:
     restart: always
