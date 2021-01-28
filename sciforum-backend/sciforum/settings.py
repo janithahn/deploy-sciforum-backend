@@ -42,6 +42,8 @@ SERVER_TYPE = "DEV"
 SESSION_COOKIE_HTTPONLY = True
 SESSION_EXPIRE_AT_BROWSER_CLOSE = True
 
+CORS_ORIGIN_ALLOW_ALL = True
+
 # Password reset email
 # EMAIL_BACKEND = 'django.core.mail.backends.console.EmailBackend'  # this gives the email in the console
 EMAIL_BACKEND = 'django.core.mail.backends.smtp.EmailBackend'
