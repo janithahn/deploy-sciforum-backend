@@ -245,7 +245,11 @@ class JWTUserSerializer(serializers.ModelSerializer):
         fields = ['id', 'username', 'email', 'email_verified', 'profile']
 
     def get_email_verified(self, obj):
-        return EmailAddress.objects.get(user=obj).verified
+        try:
+            return EmailAddress.objects.get(user=obj).verified
+        except Exception as exp:
+            print(exp)
+        return False
 
 
 class JWTSerializer(JSONWebTokenSerializer):
