@@ -281,17 +281,17 @@ class JWTSerializer(JSONWebTokenSerializer):
                                                                         description='email_verification')
                             notification.delete()
                             notify.send(sender=from_user, recipient=to_user, verb=message, description='email_verification')
-                        except Exception as excep:
-                            print(excep)
+                        except Exception as exp:
+                            print(exp)
+                    else:
+                        try:
+                            notification = to_user.notifications.filter(actor_object_id=from_user.id, recipient=user,
+                                                                        description='email_verification')
+                            notification.delete()
+                        except Exception as exp:
+                            print(exp)
                 except Exception as exp:
                     print(exp)
-                else:
-                    try:
-                        notification = to_user.notifications.filter(actor_object_id=from_user.id, recipient=user,
-                                                                    description='email_verification')
-                        notification.delete()
-                    except Exception as excep:
-                        print(excep)
 
                 payload = jwt_payload_handler(user)
                 user_logged_in.send(sender=user.__class__, request=self.context['request'], user=user)
