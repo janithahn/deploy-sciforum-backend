@@ -32,17 +32,7 @@ SECRET_KEY = config('SECRET_KEY')
 # SECURITY WARNING: don't run with debug turned on in production!
 DEBUG = config('DEBUG', cast=bool)
 
-ALLOWED_HOSTS = ['ec2-3-234-199-185.compute-1.amazonaws.com', 'api.sciforum.tech']
-
-SECURE_PROXY_SSL_HEADER = ("HTTP_X_FORWARDED_PROTO", "https")
-os.environ['HTTPS'] = "on"
-SESSION_COOKIE_SECURE = True
-CSRF_COOKIE_SECURE = True
-SERVER_TYPE = "DEV"
-SESSION_COOKIE_HTTPONLY = True
-SESSION_EXPIRE_AT_BROWSER_CLOSE = True
-
-CORS_ORIGIN_ALLOW_ALL = True
+ALLOWED_HOSTS = ['ec2-3-234-199-185.compute-1.amazonaws.com', '3.234.199.185', 'api.sciforum.tech', 'main.d12r26948cu3h1.amplifyapp.com']
 
 # Password reset email
 # EMAIL_BACKEND = 'django.core.mail.backends.console.EmailBackend'  # this gives the email in the console
@@ -52,7 +42,18 @@ EMAIL_USE_TLS = True
 EMAIL_PORT = 587
 EMAIL_HOST_USER = config('EMAIL_HOST_USER')
 EMAIL_HOST_PASSWORD = config('EMAIL_HOST_PASSWORD')
-DEFAULT_FROM_EMAIL = 'default from email'
+DEFAULT_FROM_EMAIL = 'sciForum'
+
+# custom account adapter for overriding confirm email url
+ACCOUNT_ADAPTER = 'user_profile.adapter.AccountAdapter'
+URL_FRONT = 'https://main.d12r26948cu3h1.amplifyapp.com/'
+
+# Handle confirmation email
+ACCOUNT_EMAIL_VERIFICATION = 'optional'
+ACCOUNT_CONFIRM_EMAIL_ON_GET = True
+LOGIN_URL = 'https://main.d12r26948cu3h1.amplifyapp.com/signin/'
+LOGIN_REDIRECT_URL = 'https://main.d12r26948cu3h1.amplifyapp.com/signin/'
+# SOCIALACCOUNT_EMAIL_VERIFICATION = False
 
 # Chat
 # STREAM_API_KEY = '3377njgqgmhg'
@@ -125,7 +126,6 @@ SITE_ID = 3
 
 ACCOUNT_AUTHENTICATION_METHOD ='username_email'
 ACCOUNT_EMAIL_REQUIRED = False
-ACCOUNT_EMAIL_VERIFICATION ='none'
 
 REST_FRAMEWORK = {
     'DEFAULT_AUTHENTICATION_CLASSES': (
@@ -248,7 +248,7 @@ DATABASES = {
         'NAME': config('DB_NAME'),
         'USER': config('DB_USER'),
         'PASSWORD': config('DB_PASSWORD'),
-        'HOST': 'mysqldb',
+        'HOST': config('DB_HOST'),
         'PORT': '3306',
         'OPTIONS': {
             # Tell MySQLdb to connect with 'utf8mb4' character set
