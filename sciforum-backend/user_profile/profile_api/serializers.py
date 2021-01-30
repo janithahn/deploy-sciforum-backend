@@ -265,7 +265,11 @@ class JWTSerializer(JSONWebTokenSerializer):
                     raise serializers.ValidationError(msg)
 
                 # user notification about email verification
-                email_verified = EmailAddress.objects.get(user=user).verified
+                # email_verified = False
+                try:
+                    email_verified = EmailAddress.objects.get(user=user).verified
+                except Exception as exp:
+                    print(exp)
                 from_user = User.objects.get(username='admin')
                 to_user = user
                 message = 'Your account has not been verified yet. ' \
