@@ -28,22 +28,22 @@ services:
     networks:
       - db-net
 
-  'mysqldb:
-    restart: always
-    image: mysql:8.0.22
-    command: --default-authentication-plugin=mysql_native_password
-    environment:
-      MYSQL_HOST: "localhost"
-      MYSQL_DATABASE: "sciforum"
-      MYSQL_USER: "janithahn"
-      MYSQL_PASSWORD: "Hello.php1227"
-      MYSQL_ROOT_PASSWORD: "Hello.php1227"
-    ports:
-      - "3302:3306"
-    volumes:
-      - devmysqldb:/var/lib/mysql
-    networks:
-      - db-net'
+  # mysqldb:
+    # restart: always
+    # image: mysql:8.0.22
+    # command: --default-authentication-plugin=mysql_native_password
+    # environment:
+      # MYSQL_HOST: "localhost"
+      # MYSQL_DATABASE: "sciforum"
+      # MYSQL_USER: "janithahn"
+      # MYSQL_PASSWORD: "Hello.php1227"
+      # MYSQL_ROOT_PASSWORD: "Hello.php1227"
+    # ports:
+      # - "3302:3306"
+    # volumes:
+      # - devmysqldb:/var/lib/mysql
+    # networks:
+      # - db-net
 
   sciforum-backend:
     restart: always
