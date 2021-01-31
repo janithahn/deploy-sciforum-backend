@@ -46,13 +46,13 @@ DEFAULT_FROM_EMAIL = 'sciForum'
 
 # custom account adapter for overriding confirm email url
 ACCOUNT_ADAPTER = 'user_profile.adapter.AccountAdapter'
-URL_FRONT = 'https://main.d12r26948cu3h1.amplifyapp.com/'
+URL_FRONT = config('URL_FRONT')
 
 # Handle confirmation email
 ACCOUNT_EMAIL_VERIFICATION = 'optional'
 ACCOUNT_CONFIRM_EMAIL_ON_GET = True
-LOGIN_URL = 'https://main.d12r26948cu3h1.amplifyapp.com/signin/'
-LOGIN_REDIRECT_URL = 'https://main.d12r26948cu3h1.amplifyapp.com/signin/'
+LOGIN_URL = config('LOGIN_URL')
+LOGIN_REDIRECT_URL = config('LOGIN_REDIRECT_URL')
 # SOCIALACCOUNT_EMAIL_VERIFICATION = False
 
 # Chat
@@ -122,7 +122,7 @@ INSTALLED_APPS = [
     'generic_relations',
 ]
 
-SITE_ID = 3
+SITE_ID = config('SITE_ID')
 
 ACCOUNT_AUTHENTICATION_METHOD ='username_email'
 ACCOUNT_EMAIL_REQUIRED = True
