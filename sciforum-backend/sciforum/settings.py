@@ -32,6 +32,7 @@ SECRET_KEY = config('SECRET_KEY')
 # SECURITY WARNING: don't run with debug turned on in production!
 DEBUG = config('DEBUG', cast=bool)
 
+# ALLOWED_HOSTS = config('ALLOWED_HOSTS', cast=lambda v: [s.strip() for s in v.split(',')])
 ALLOWED_HOSTS = config('ALLOWED_HOSTS', cast=Csv())
 
 # Password reset email
@@ -126,7 +127,7 @@ INSTALLED_APPS = [
 SITE_ID = config('SITE_ID')
 
 ACCOUNT_AUTHENTICATION_METHOD ='username_email'
-ACCOUNT_EMAIL_REQUIRED = True
+ACCOUNT_EMAIL_REQUIRED = False
 
 REST_FRAMEWORK = {
     'DEFAULT_AUTHENTICATION_CLASSES': (
@@ -249,13 +250,11 @@ DATABASES = {
         'NAME': config('DB_NAME'),
         'USER': config('DB_USER'),
         'PASSWORD': config('DB_PASSWORD'),
-        'HOST': config('DB_HOST'),
+        'HOST': 'localhost',
         'PORT': '3306',
         'OPTIONS': {
             # Tell MySQLdb to connect with 'utf8mb4' character set
             'charset': 'utf8mb4',
-            # MYSQL strict mode
-            'init_command': "SET sql_mode='STRICT_TRANS_TABLES'",
         },
         'TEST': {
             'CHARSET': 'utf8mb4',
@@ -265,9 +264,6 @@ DATABASES = {
     'crawler': {
         'ENGINE': 'djongo',
         'NAME': 'sciEventsCrawler',
-        'CLIENT': {
-            'host': 'mongodb'
-        }
     },
 }
 

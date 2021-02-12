@@ -8,6 +8,7 @@ from answer.models import Answer
 from post.models import Post
 from allauth.account.admin import EmailAddress
 from notifications.signals import notify
+from rest_framework.utils import model_meta
 # from django.contrib.auth.models import User
 # from user_profile.profile_api.serializers import UserProfileSerializer
 # from drf_writable_nested.serializers import WritableNestedModelSerializer
@@ -60,7 +61,6 @@ class ProfileSerializer(serializers.ModelSerializer):
             # , 'lastAccessDate', 'creationDate', 'location', 'views', 'upVotes', 'downVotes', 'profileImgUrl']
 
     def get_picture_url(self, profile):
-        print(profile.profileImg.url)
         return profile.profileImg.url
 
     ''' update(self, instance, validated_data):
@@ -271,6 +271,7 @@ class JWTSerializer(JSONWebTokenSerializer):
                 # user notification about email verification
                 try:
                     email_verified = EmailAddress.objects.get(user=user).verified
+
                     from_user = User.objects.get(username='admin')
                     to_user = user
                     message = 'Your account has not been verified yet. ' \
@@ -280,16 +281,17 @@ class JWTSerializer(JSONWebTokenSerializer):
                             notification = to_user.notifications.filter(actor_object_id=from_user.id, recipient=user,
                                                                         description='email_verification')
                             notification.delete()
-                            notify.send(sender=from_user, recipient=to_user, verb=message, description='email_verification')
-                        except Exception as exp:
-                            print(exp)
+                            notify.send(sender=from_user, recipient=to_user, verb=message,
+                                        description='email_verification')
+                        except Exception as excep:
+                            print(excep)
                     else:
                         try:
                             notification = to_user.notifications.filter(actor_object_id=from_user.id, recipient=user,
                                                                         description='email_verification')
                             notification.delete()
-                        except Exception as exp:
-                            print(exp)
+                        except Exception as excep:
+                            print(excep)
                 except Exception as exp:
                     print(exp)
 

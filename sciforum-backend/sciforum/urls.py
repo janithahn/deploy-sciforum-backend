@@ -21,7 +21,7 @@ from django.conf.urls.static import static
 from post.api.views import VisitorsListView, ProfileViewerInfoView, PostUpdateView, PostCreateview, PostDeleteView
 from user_profile.profile_api.views import CustomAuthToken, CustomLoginView, CustomRegisterView, UserListView, UserDetailView\
     , UserUpdateView, UserDeleteView, JWTLoginView, JWTRegisterView, GoogleLoginView, NewEmailConfirmation, VerifyEmailCustomView
-from answer.answer_api.views import AnswerCreateview, AnswerUpdateView, AnswerDeleteView
+from answer.answer_api.views import AnswerCreateView, AnswerUpdateView, AnswerDeleteView
 from vote.vote_api.views import PostVoteCreateview, PostVoteUpdateView, PostVoteDeleteView\
     , AnswerVoteCreateview, AnswerVoteUpdateView, AnswerVoteDeleteView, PostCommentVoteCreateview, PostCommentVoteDeleteView\
     , PostCommentVoteUpdateView , AnswerCommentVoteCreateview, AnswerCommentVoteUpdateView, AnswerCommentVoteDeleteView
@@ -41,7 +41,7 @@ urlpatterns = [
     # basic end-ponits
     path('api/', include('post.api.urls')),
     path('profile_api/', include('user_profile.profile_api.urls')),
-    path('answer_api/', include('answer.answer_api.urls')),
+    path('answer_api/', include(('answer.answer_api.urls', 'answer'), namespace='answer_api')),
     path('vote_api/', include('vote.vote_api.urls')),
 
     # post changes
@@ -51,7 +51,7 @@ urlpatterns = [
 
     # answer changes
     path('answer_api/answer/<int:pk>/update/', AnswerUpdateView.as_view()),
-    path('answer_api/answer/create/', AnswerCreateview.as_view()),
+    path('answer_api/answer/create/', AnswerCreateView.as_view()),
     path('answer_api/answer/<int:pk>/delete/', AnswerDeleteView.as_view()),
     # path("answer_api/answer/notifications/<int:pk>/update", NotificationsUpdateView.as_view()),
 
