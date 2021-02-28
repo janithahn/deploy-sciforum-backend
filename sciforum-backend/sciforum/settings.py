@@ -306,6 +306,8 @@ DATABASES = {
         'OPTIONS': {
             # Tell MySQLdb to connect with 'utf8mb4' character set
             'charset': 'utf8mb4',
+            # MYSQL strict mode
+            'init_command': "SET sql_mode='STRICT_TRANS_TABLES'",
         },
         'TEST': {
             'CHARSET': 'utf8mb4',
