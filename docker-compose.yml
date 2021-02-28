@@ -72,6 +72,9 @@ services:
     depends_on:
       # - mysqldb
       - mongodb
+      - redis
+    links:
+      - redis
     networks:
       - db-net
 
@@ -80,7 +83,6 @@ services:
     image: sciforum-celeryworker
     depends_on:
       - redis
-      - mysqldb
     ports: []
     command: celery -A sciforum worker -l INFO
     links:
@@ -93,7 +95,6 @@ services:
     image: sciforum-celerybeat
     depends_on:
       - redis
-      - mysqldb
     ports: []
     command: celery -A sciforum beat -l INFO
     links:
