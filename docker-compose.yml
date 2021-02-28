@@ -78,6 +78,30 @@ services:
     networks:
       - db-net
 
+  celery-worker:
+    <<: *sciforum-backend
+    image: sciforum-celeryworker
+    depends_on:
+      - redis
+    ports: []
+    command: celery -A sciforum worker -l INFO
+    links:
+      - redis
+    networks:
+      - db-net
+
+  celery-beat:
+    <<: *sciforum-backend
+    image: sciforum-celerybeat
+    depends_on:
+      - redis
+    ports: []
+    command: celery -A sciforum beat -l INFO
+    links:
+      - redis
+    networks:
+      - db-net
+
 networks:
   db-net:
     driver: bridge
