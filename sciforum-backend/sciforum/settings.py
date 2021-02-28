@@ -15,6 +15,7 @@ from pathlib import Path
 from decouple import config, Csv
 import firebase_admin
 from firebase_admin import credentials
+from celery.schedules import crontab
 
 # Build paths inside the project like this: BASE_DIR / 'subdir'.
 BASE_DIR = Path(__file__).resolve(strict=True).parent.parent
@@ -44,6 +45,7 @@ EMAIL_PORT = 587
 EMAIL_HOST_USER = config('EMAIL_HOST_USER')
 EMAIL_HOST_PASSWORD = config('EMAIL_HOST_PASSWORD')
 DEFAULT_FROM_EMAIL = config('DEFAULT_FROM_EMAIL')
+AUTO_MAIL_FROM = DEFAULT_FROM_EMAIL
 
 # custom account adapter for overriding confirm email url
 ACCOUNT_ADAPTER = 'user_profile.adapter.AccountAdapter'
@@ -61,8 +63,53 @@ LOGIN_REDIRECT_URL = config('LOGIN_REDIRECT_URL')
 # STREAM_API_KEY = '3377njgqgmhg'
 # STREAM_API_SECRET = '5445hhk8qb4g5n6sh6t8s5tk4bzgpq6xhz5k7j5fj2bhzp2bw57422unk54qckjh'
 
-# Application definition
+# Templates
+'''TEMPLATE_DIRS = (
+    os.path.join(BASE_DIR, 'user_profile\\templates'),
+)'''
 
+# Celery setup
+# BROKER_TRANSPORT = 'redis'
+# CELERY_REDIS_HOST = 'redis'
+# CELERY_REDIS_PORT = 6379
+CELERY_RESULT_BACKEND = 'redis://redis:6379'
+CELERY_BROKER_URL = 'redis://redis:6379'
+CELERY_ACCEPT_CONTENT = ['application/json']
+CELERY_TASK_SERIALIZER = 'json'
+CELERY_RESULT_SERIALIZER = 'json'
+CELERY_TIMEZONE = 'Asia/Colombo'
+CELERY_BEAT_SCHEDULER = 'django_celery_beat.schedulers:DatabaseScheduler'
+# CELERY_CACHE_BACKEND = 'default'
+
+'''CACHES = {
+    'default': {
+        'BACKEND': 'django.core.cache.backends.db.DatabaseCache',
+        'LOCATION': 'sciforum-cache',
+    }
+}'''
+
+CACHES = {
+    "default": {
+        "BACKEND": "django_redis.cache.RedisCache",
+        "LOCATION": "redis://redis:6379",
+        "OPTIONS": {
+            "CLIENT_CLASS": "django_redis.client.DefaultClient",
+        }
+    }
+}
+
+'''CELERY_BEAT_SCHEDULE = {
+    'notify-every-10-seconds': {
+        'task': 'user_profile.tasks.send_notification',
+        'schedule': 10.0,
+    },
+    'notify-every-1-minute': {
+        'task': 'user_profile.tasks.send_moderator_daily_notification',
+        'schedule': crontab(minute=1),
+    },
+}'''
+
+# Application definition
 INSTALLED_APPS = [
     'django.contrib.admin',
     'django.contrib.auth',
@@ -85,6 +132,7 @@ INSTALLED_APPS = [
     'comment.apps.CommentConfig',
     'chat.apps.ChatConfig',
     'scraper.apps.ScraperConfig',
+    'mail_app.apps.MailAppConfig',
     # 'grabber.grabber.apps.GrabberConfig',
 
     'corsheaders',
@@ -122,6 +170,9 @@ INSTALLED_APPS = [
 
     # generic relations
     'generic_relations',
+
+    # celery
+    'django_celery_beat',
 ]
 
 SITE_ID = config('SITE_ID')
@@ -255,8 +306,6 @@ DATABASES = {
         'OPTIONS': {
             # Tell MySQLdb to connect with 'utf8mb4' character set
             'charset': 'utf8mb4',
-            # MYSQL strict mode
-            'init_command': "SET sql_mode='STRICT_TRANS_TABLES'",
         },
         'TEST': {
             'CHARSET': 'utf8mb4',

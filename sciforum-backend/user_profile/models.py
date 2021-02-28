@@ -9,6 +9,7 @@ from django.core.validators import MinValueValidator, MaxValueValidator
 
 class UserRole(Enum):
     ADMIN = 'ADMIN'
+    MODERATOR = 'MODERATOR'
     USER = 'USER'
 
 
@@ -25,6 +26,7 @@ class Profile(models.Model):
     upVotes = models.IntegerField(blank=True, null=True)
     downVotes = models.IntegerField(blank=True, null=True)
     profileImg = models.ImageField(upload_to='profile_image', blank=True)
+    is_email_subscribed = models.BooleanField(default=False)
     # profileImgUrl = models.URLField(blank=True)
 
 
@@ -52,6 +54,11 @@ class UserEmployment(models.Model):
 class UserSkills(models.Model):
     user = models.ForeignKey(User, on_delete=models.CASCADE, related_name='skills')
     skill = models.TextField(blank=True)
+
+
+class UserInterests(models.Model):
+    user = models.ForeignKey(User, on_delete=models.CASCADE, related_name='interests')
+    interest = models.TextField(blank=True)
 
 
 class UserEducation(models.Model):

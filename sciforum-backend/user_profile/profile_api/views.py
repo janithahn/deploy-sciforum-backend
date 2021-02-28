@@ -4,9 +4,10 @@ from rest_framework.generics import ListAPIView, RetrieveAPIView, UpdateAPIView,
 from rest_framework import viewsets, permissions, status #, pagination
 from post.models import Post
 from user_profile.models import ProfileViewerInfo, Profile, UserEmployment, UserEducation, UserLanguages\
-    , UserContact, UserSkills
+    , UserContact, UserSkills, UserInterests
 from .serializers import UserSerializer, CustomUserSerializer, JWTSerializer, UserEmploymentSerializer\
-    , UserEducationSerializer, UserLanguageSerializer, UserSkillsSerializer, UserContactSerializer, MentionListSerializer
+    , UserEducationSerializer, UserLanguageSerializer, UserSkillsSerializer, UserContactSerializer\
+    , MentionListSerializer, UserInterestsSerializer
 from rest_framework.authtoken.views import ObtainAuthToken
 from rest_framework.authtoken.models import Token
 from rest_framework.response import Response
@@ -28,6 +29,7 @@ from .mixins import GetSerializerClassMixin
 from firebase_admin import auth
 from dj_rest_auth.registration.views import VerifyEmailView
 from django.utils.translation import ugettext_lazy as _
+from django.forms.models import model_to_dict
 
 # email confirmation
 from allauth.account.signals import email_confirmed
@@ -50,6 +52,7 @@ class ProfileViewSet(viewsets.ModelViewSet):
     lookup_field = 'user'
     filter_backends = [DjangoFilterBackend]
     filterset_fields = ['aboutMe', 'user']
+    http_method_names = ['get']
 
     def perform_update(self, serializer):
         # Check if an image exists for the profile object and if yes then delete the image from the storage
@@ -61,7 +64,8 @@ class ProfileViewSet(viewsets.ModelViewSet):
 
 # views for users
 class UserViewSet(GetSerializerClassMixin, viewsets.ModelViewSet):
-
+    authentication_classes = [authentication.JSONWebTokenAuthentication]
+    permission_classes = [permissions.IsAuthenticated]
     '''
         here it describes the way of getting user information over the drf depending on the serializer.
     '''
@@ -148,11 +152,15 @@ class UserDetailView(RetrieveAPIView):
 
 
 class UserUpdateView(UpdateAPIView):
-    authentication_classes = [authentication.JSONWebTokenAuthentication]
-    permission_classes = [permissions.IsAuthenticated]
+    # authentication_classes = [authentication.JSONWebTokenAuthentication]
+    # permission_classes = [permissions.IsAuthenticated]
     queryset = User.objects.all()
     serializer_class = UserSerializer
     lookup_field = 'username'
+
+    def perform_update(self, serializer):
+        UserInterests.objects.filter(user=self.request.user).delete()  # first delete existing values before update
+        serializer.save()
 
 
 class UserDeleteView(DestroyAPIView):
@@ -290,6 +298,35 @@ class UserSkillsEditViewSet(viewsets.ModelViewSet):
     http_method_names = ['get', 'post', 'patch', 'put', 'delete']
 
 
+class UserInterestsFilter(FilterSet):
+    username = CharFilter(field_name='user__username', lookup_expr='iexact')
+
+    class Meta:
+        model = UserInterests
+        fields = ('username',)
+
+
+class UserInterestsViewSet(viewsets.ModelViewSet):
+    queryset = UserInterests.objects.all()
+    serializer_class = UserInterestsSerializer
+
+    filter_backends = [DjangoFilterBackend]
+    filterset_class = UserInterestsFilter
+
+    http_method_names = ['get']
+
+
+class UserInterestsEditViewSet(viewsets.ModelViewSet):
+
+    authentication_classes = [authentication.JSONWebTokenAuthentication]
+    permission_classes = [permissions.IsAuthenticated]
+
+    queryset = UserInterests.objects.all()
+    serializer_class = UserInterestsSerializer
+
+    http_method_names = ['get', 'post', 'patch', 'put', 'delete']
+
+
 class UserContactFilter(FilterSet):
     username = CharFilter(field_name='user__username', lookup_expr='iexact')
 
@@ -386,7 +423,9 @@ class JWTRegisterView(RegisterView):
                 'id': user.id,
                 'username': user.username,
                 'email': user.email,
-                'email_verified': False
+                'email_verified': False,
+                'has_interests': False,
+                'is_email_subscribed': False,
             },
             'firebase_token': firebase_token
         })
@@ -412,13 +451,24 @@ class GoogleLoginView(SocialLoginView):
 
         email_verified = EmailAddress.objects.get(user=user).verified
 
+        user_profile = Profile.objects.get(user=user)
+        user_role = user_profile.userRole.value
+        is_email_subscribed = user_profile.is_email_subscribed
+
+        has_interests = False
+        if UserInterests.objects.filter(user=user).count() != 0:
+            has_interests = True
+
         return Response({
             'token': jwttoken,
             'user': {
                 'id': user.id,
                 'username': user.username,
                 'email': user.email,
-                'email_verified': email_verified
+                'email_verified': email_verified,
+                'role': user_role,
+                'has_interests': has_interests,
+                'is_email_subscribed': is_email_subscribed,
             },
             'firebase_token': firebase_token,
         })
