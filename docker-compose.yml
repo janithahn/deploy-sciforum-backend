@@ -2,17 +2,35 @@ version: "3.2"
 
 services:
 
-  nginx-certbot:
-    restart: unless-stopped
-    image: staticfloat/nginx-certbot
+  # nginx-certbot:
+    # restart: unless-stopped
+    # image: staticfloat/nginx-certbot
+    # ports:
+        # - 80:80/tcp
+        # - 443:443/tcp
+    # environment:
+        # CERTBOT_EMAIL: admin@sciforum.tech
+    # volumes:
+      # - ./conf.d:/etc/nginx/user.conf.d:ro
+      # - letsencrypt:/etc/letsencrypt
+
+  nginx:
+    image: nginx:latest
+    command: "/bin/sh -c 'while :; do sleep 6h & wait $${!}; nginx -s reload; done & nginx -g \"daemon off;\"'"
     ports:
-        - 80:80/tcp
-        - 443:443/tcp
-    environment:
-        CERTBOT_EMAIL: admin@sciforum.tech
+      - "80:80"
+      - "443:443"
     volumes:
-      - ./conf.d:/etc/nginx/user.conf.d:ro
-      - letsencrypt:/etc/letsencrypt
+      - ./data/nginx:/etc/nginx/conf.d
+      - ./data/certbot/conf:/etc/letsencrypt
+      - ./data/certbot/www:/var/www/certbot
+
+  certbot:
+    image: certbot/certbot
+    entrypoint: "/bin/sh -c 'trap exit TERM; while :; do certbot renew; sleep 12h & wait $${!}; done;'"
+    volumes:
+      - ./data/certbot/conf:/etc/letsencrypt
+      - ./data/certbot/www:/var/www/certbot
 
   mongodb:
     restart: always
@@ -109,4 +127,4 @@ networks:
     driver: bridge
 
 volumes:  
-  letsencrypt:
+  # letsencrypt:
