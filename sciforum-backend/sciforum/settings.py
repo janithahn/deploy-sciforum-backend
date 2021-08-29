@@ -69,17 +69,8 @@ LOGIN_REDIRECT_URL = config('LOGIN_REDIRECT_URL')
 )'''
 
 # Celery setup
-# BROKER_TRANSPORT = 'redis'
-# CELERY_REDIS_HOST = 'redis'
-# CELERY_REDIS_PORT = 6379
-CELERY_RESULT_BACKEND = 'redis://redis:6379'
-CELERY_BROKER_URL = 'redis://redis:6379'
-CELERY_ACCEPT_CONTENT = ['application/json']
-CELERY_TASK_SERIALIZER = 'json'
-CELERY_RESULT_SERIALIZER = 'json'
-CELERY_TIMEZONE = 'Asia/Colombo'
-CELERY_BEAT_SCHEDULER = 'django_celery_beat.schedulers:DatabaseScheduler'
-# CELERY_CACHE_BACKEND = 'default'
+CELERY_RESULT_BACKEND = 'redis://localhost:6379'
+CELERY_CACHE_BACKEND = 'default'
 
 '''CACHES = {
     'default': {
@@ -87,17 +78,21 @@ CELERY_BEAT_SCHEDULER = 'django_celery_beat.schedulers:DatabaseScheduler'
         'LOCATION': 'sciforum-cache',
     }
 }'''
-
 CACHES = {
     "default": {
         "BACKEND": "django_redis.cache.RedisCache",
-        "LOCATION": "redis://redis:6379",
+        "LOCATION": "redis://localhost:6379",
         "OPTIONS": {
             "CLIENT_CLASS": "django_redis.client.DefaultClient",
         }
     }
 }
 
+CELERY_BROKER_URL = 'redis://localhost:6379'
+CELERY_ACCEPT_CONTENT = ['application/json']
+CELERY_TASK_SERIALIZER = 'json'
+CELERY_RESULT_SERIALIZER = 'json'
+CELERY_TIMEZONE = 'Asia/Colombo'
 '''CELERY_BEAT_SCHEDULE = {
     'notify-every-10-seconds': {
         'task': 'user_profile.tasks.send_notification',
@@ -108,8 +103,10 @@ CACHES = {
         'schedule': crontab(minute=1),
     },
 }'''
+CELERY_BEAT_SCHEDULER = 'django_celery_beat.schedulers:DatabaseScheduler'
 
 # Application definition
+
 INSTALLED_APPS = [
     'django.contrib.admin',
     'django.contrib.auth',
@@ -306,8 +303,6 @@ DATABASES = {
         'OPTIONS': {
             # Tell MySQLdb to connect with 'utf8mb4' character set
             'charset': 'utf8mb4',
-            # MYSQL strict mode
-            'init_command': "SET sql_mode='STRICT_TRANS_TABLES'",
         },
         'TEST': {
             'CHARSET': 'utf8mb4',
@@ -318,7 +313,7 @@ DATABASES = {
         'ENGINE': 'djongo',
         'NAME': 'sciEventsCrawler',
         'CLIENT': {
-            'host': 'mongodb'
+            'host': config('MONGO_DB_HOST')
         }
     },
 }
