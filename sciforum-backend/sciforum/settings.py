@@ -36,6 +36,8 @@ DEBUG = config('DEBUG', cast=bool)
 # ALLOWED_HOSTS = config('ALLOWED_HOSTS', cast=lambda v: [s.strip() for s in v.split(',')])
 ALLOWED_HOSTS = config('ALLOWED_HOSTS', cast=Csv())
 
+SECURE_PROXY_SSL_HEADER = ('HTTP_X_FORWARDED_PROTO', 'https')
+
 # Password reset email
 # EMAIL_BACKEND = 'django.core.mail.backends.console.EmailBackend'  # this gives the email in the console
 EMAIL_BACKEND = 'django.core.mail.backends.smtp.EmailBackend'
