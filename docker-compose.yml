@@ -24,7 +24,9 @@ services:
     ports:
         - "27017:27017"
     volumes:
-      - devmongo:/data/db
+      - ./mongo_dump/mongo_init.sh:/docker-entrypoint-initdb.d/mongo_init.sh
+      - ./mongo_dump:/mongo_dump
+      - ./devmongo:/data/db
     networks:
       - db-net
 
@@ -44,6 +46,27 @@ services:
       # - devmysqldb:/var/lib/mysql
     # networks:
       # - db-net
+    
+  mysqldb:
+    restart: always
+    image: mysql:8.0.22
+    container_name: mysqldb
+    command: --default-authentication-plugin=mysql_native_password
+    env_file:
+      - ./sciforum-backend/settings.ini
+    ports:
+      - "3302:3306"
+    environment: 
+      MYSQL_USER: janithahn
+      MYSQL_PASSWORD: Hello.php1227
+      MYSQL_DATABASE: sciforum
+    security_opt:
+      - seccomp:unconfined
+    volumes:
+      - ./mysql_dump:/docker-entrypoint-initdb.d
+      - ./devmysqldb:/var/lib/mysql
+    networks:
+      - db-net
 
   redis:
     image: redis:latest
@@ -70,7 +93,7 @@ services:
     ports:
        - "8000:8000"
     depends_on:
-      # - mysqldb
+      - mysqldb
       - mongodb
       - redis
     links:
@@ -108,5 +131,5 @@ networks:
 
 volumes:  
   # devmysqldb:
-  devmongo:
+  # devmongo:
   letsencrypt:

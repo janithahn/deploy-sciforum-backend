@@ -1,0 +1,1 @@
+{"options":{},"indexes":[{"v":{"$numberInt":"2"},"key":{"_id":{"$numberInt":"1"}},"name":"_id_","ns":"sciEventsCrawler.scraper_event"},{"v":{"$numberInt":"2"},"unique":true,"key":{"id":{"$numberInt":"1"}},"name":"__primary_key__","ns":"sciEventsCrawler.scraper_event"}],"uuid":"bcedfe8c00e04d349ac95682e2d15251"}

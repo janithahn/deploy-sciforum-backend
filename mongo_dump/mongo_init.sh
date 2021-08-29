@@ -1,0 +1,1 @@
+mongorestore --db sciEventsCrawler ./mongo_dump/sciEventsCrawler
