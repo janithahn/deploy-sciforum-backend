@@ -15,8 +15,8 @@ services:
     volumes:
       - ./conf.d:/etc/nginx/user.conf.d:ro
       - letsencrypt:/etc/letsencrypt
-    depends_on:
-      - sciforum-backend
+    # depends_on:
+      # - sciforum-backend
 
   mongodb:
     restart: always
