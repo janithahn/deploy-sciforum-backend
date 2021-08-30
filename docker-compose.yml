@@ -2,40 +2,40 @@ version: "3.2"
 
 services:
 
-  # nginx-certbot:
-    # restart: unless-stopped
-    # image: staticfloat/nginx-certbot
-    # ports:
-        # - 80:80/tcp
-        # - 443:443/tcp
-    # environment:
-        # CERTBOT_EMAIL: admin@sciforum.tech
-    # volumes:
-      # - ./conf.d:/etc/nginx/user.conf.d:ro
-      # - letsencrypt:/etc/letsencrypt
-
-  nginx:
-    image: nginx:latest
-    command: "/bin/sh -c 'while :; do sleep 6h & wait $${!}; nginx -s reload; done & nginx -g \"daemon off;\"'"
+  nginx-certbot:
+    restart: unless-stopped
+    image: staticfloat/nginx-certbot
     ports:
-      - "80:80"
-      - "443:443"
+        - 80:80/tcp
+        - 443:443/tcp
+    environment:
+        CERTBOT_EMAIL: rng.janitha@gmail.com
     volumes:
-      - ./data/nginx:/etc/nginx/conf.d
-      - ./data/certbot/conf:/etc/letsencrypt
-      - ./data/certbot/www:/var/www/certbot
-    networks:
-      - db-net
+      - ./conf.d:/etc/nginx/user.conf.d:ro
+      - letsencrypt:/etc/letsencrypt
 
-  certbot:
-    image: certbot/certbot
-    # command: certonly --webroot --webroot-path=/var/www/certbot --email rng.janitha@gmail.com --agree-tos --no-eff-email -d backend.sciforum.tech
-    entrypoint: "/bin/sh -c 'trap exit TERM; while :; do certbot renew; sleep 12h & wait $${!}; done;'"
-    volumes:
-      - ./data/certbot/conf:/etc/letsencrypt
-      - ./data/certbot/www:/var/www/certbot
-    networks:
-      - db-net
+  # nginx:
+  #   image: nginx:latest
+  #   command: "/bin/sh -c 'while :; do sleep 6h & wait $${!}; nginx -s reload; done & nginx -g \"daemon off;\"'"
+  #   ports:
+  #     - "80:80"
+  #     - "443:443"
+  #   volumes:
+  #     - ./data/nginx:/etc/nginx/conf.d
+  #     - ./data/certbot/conf:/etc/letsencrypt
+  #     - ./data/certbot/www:/var/www/certbot
+  #   networks:
+  #     - db-net
+
+  # certbot:
+  #   image: certbot/certbot
+  #   # command: certonly --webroot --webroot-path=/var/www/certbot --email rng.janitha@gmail.com --agree-tos --no-eff-email -d backend.sciforum.tech
+  #   entrypoint: "/bin/sh -c 'trap exit TERM; while :; do certbot renew; sleep 12h & wait $${!}; done;'"
+  #   volumes:
+  #     - ./data/certbot/conf:/etc/letsencrypt
+  #     - ./data/certbot/www:/var/www/certbot
+  #   networks:
+  #     - db-net
 
   mongodb:
     restart: always
@@ -131,5 +131,5 @@ networks:
   db-net:
     driver: bridge
 
-# volumes:  
-  # letsencrypt:
+volumes:  
+  letsencrypt:
