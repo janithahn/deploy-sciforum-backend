@@ -5,7 +5,7 @@ if ! [ -x "$(command -v docker-compose)" ]; then
   exit 1
 fi
 
-domains=(sciforumbackend.centralindia.cloudapp.azure.com)
+domains=(backend.sciforum.tech)
 rsa_key_size=4096
 data_path="./data/certbot"
 email="admin@sciforum.tech" # Adding a valid address is strongly recommended
